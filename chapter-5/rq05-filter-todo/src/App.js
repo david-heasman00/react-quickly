@@ -1,59 +1,93 @@
-//Todo app with multiple useState hooks
-
 import { useState } from "react";
 
-//Utility function that takes an array of task objects
-//and returns a new array of same objects, except
-//one of them will be marked as done, as indicated
-//by second argument.
+//Utility function that takes array of task objs and returns a new array of same objs, except one we mark as done
 function markDone(list, index) {
   return list.map(
     (item, i) => (i === index ? { ...item, done: true} : item)
   );
 }
 
+//FilterButton takes 4 props and renders a nice button based on this
+function FilterButton({ current, flag, setFilter, children}) {
+  const style = {
+    border: "1px solid dimgray",
+    background: current === flag ? "dimgray" : "transparent",
+    color: current === flag ? "white" : "dimgray",
+    padding: "4px 10px"
+  };
+  return (
+    <button
+      style={style}
+      onClick = {() => setFilter(flag)} //OnClick calls passed setter function (which we'll define later)
+    >
+      {children}
+    </button>
+  );
+}
+
+//Task component takes no of props including a callback (markDone) (you'll see it later)
+function Task({ task, done, markDone }) {
+  const paragraphStyle = {
+    color : done ? "gray" : "black",
+    borderLeft: "2px solid"
+  };
+  const buttonStyle = {
+    border: "none",
+    background: "transparent", 
+    display: "inline",
+    color: "inherit"
+  };
+  return (
+    <p style = {paragraphStyle}>
+      <button
+        style={buttonStyle}
+        onClick = {done ? null : markDone}
+      >
+        {done ? "✅" : "[ ]"}
+      </button>
+      {task}
+    </p>
+  );
+}
+
+//TodoApp
 function TodoApplication({ initialList }) {
-  const [todos, setTodos] = useState(initialList);          //Still initialize task list using useState hook like in working todo app
-  const [hideDone, setHideDone] = useState(false);          //Now have second instance of useState hook for the new filter flag, which is defaulted to false
-  const filteredTodos = hideDone                            //
-    ? todos.filter(({ done }) => !done)
+  const [todos, setTodos] = useState(initialList);
+  const [hideDone, setHideDone] = useState(false);
+  const filteredTodos = hideDone
+    ? todos.filter(({ done }) => !done) //Read this as "filter where done is false" rather than "return for done to false"
     : todos;
   return (
     <main>
-      <div style={{ display: "flex "}}>                 
-        <button onClick = {() => setHideDone(false)}>      {//Two filter buttons call filter setter with either true or false
-          }
-          Show all                                        
-        </button>
-        <button onClick = {() => setHideDone(true)}>
+      <div style={{ display: "flex" }}>
+        {//set props for FilterButton incl the states
+        }
+        <FilterButton
+          current={hideDone}
+          flag = {false}
+          setFilter={setHideDone}
+        >
+          Show all
+        </FilterButton>
+        <FilterButton
+          current={hideDone}
+          flag={true}
+          setFilter={setHideDone}
+        >
           Hide done
-        </button>
+        </FilterButton>
       </div>
-      {filteredTodos.map((todo, index) => (                 //Call and use new filtered list
-        <p key={todo.task}>
-          {todo.done ? (
-            <strike>{todo.task}</strike>
-          ) : (
-            <>
-              {todo.task}
-              <button                                       //If not completed renders abutton that will call our utility
-                onClick={() => setTodos((value) =>          //function and update the task list state
-                  markDone(value, todo.index)
-                )}
-              >
-                x
-              </button>
-            </>
-          )}
-        </p>
+      {filteredTodos.map((todo, index) => (
+        <Task
+          key={todo.task}
+          task={todo.task}
+          done={todo.done}
+          markDone = {() => setTodos((value) => markDone(value, todo.index))}
+        />
       ))}
     </main>
   );
 }
-
-//Create initial list of objects, each marked as not done. 
-//Note we need to remember the original position of each item, as the index
-//of the filtered array will be different from the original position
 
 function App() {
   const items = [
@@ -61,6 +95,7 @@ function App() {
     { task: "Water the dishes", done: false, index: 1 },
     { task: "Clean the cat", done: false, index: 2 }
   ];
-  return <TodoApplication initialList={items} />;
+  return <TodoApplication initialList = {items} />;
 }
+
 export default App;
