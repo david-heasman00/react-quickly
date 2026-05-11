@@ -12,7 +12,7 @@ function DropdownCounter() {
         (value) => (value) + parseInt(evt.target.value)             
     );
     //Value will read from this array (yes, using .map)
-    const values = [1,2,3,4,5]
+    const values = [1,2,3,4,5];
     return (
         <section>
             <h1>Counter: {counter}</h1>
