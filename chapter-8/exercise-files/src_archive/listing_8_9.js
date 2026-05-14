@@ -24,6 +24,23 @@ function Button({ handleClick, label }) {                                       
     );
 }
 
+/*
+Another implementation - if one's worried about the fact the outside component will have access to 
+the event object is to create a local function that invokes the property like so
+
+function Button({ handleClick, label }) {
+    const buttonStyle = {...}
+    const onClick = () => handleClick() ;                   //Here we create a local function that, when called, invokes the passed property of handleClick
+    return (
+        <button style={buttonStyle} onClick={onClick}>      //We assign the local function onClick as the event handler, not the passed property
+            {label}
+        </button>
+    );
+}
+
+*/
+
+
 function StyledCounter() {
     const[counter, setCounter] = useState(0);
     const update = (d) => setCounter((v) => v + d);
