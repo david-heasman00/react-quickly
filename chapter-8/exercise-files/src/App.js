@@ -18,7 +18,7 @@ function WindowSize() {
         window.addEventListener("resize", onResize);                                    //Assigns hook function from above as an event listener directly on window object
         return () =>                                                                    //cleanup function which removes the listener again
             window.removeEventListener("resize", onResize);
-    }, [setSize])                                                                       //Dependency of setSize. 
+    }, [setSize])                                                                       //Dependency of setSize. Which is functionally just an empty array as setSize doesn't change.
     return <h1>Window size: {size}</h1>                                                 //Renders actual window size in returned JSX
 }
 
